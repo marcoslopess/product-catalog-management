@@ -2,8 +2,10 @@ const Product = require("../models/Product");
 
 exports.createProduct = async (req, res) => {
   try {
-    const result = await Product.create(req.body);
-    res.status(201).json({ message: "Product created", productId: result[0].insertId });
+    console.log(req.body);
+    res.status(201).json({});
+    // const result = await Product.create(req.body);
+    // res.status(201).json({ message: "Product created", productId: result[0].insertId });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

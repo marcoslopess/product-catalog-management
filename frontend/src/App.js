@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import ProductForm from "./components/ProductForm";
+import RegisterLoginForm from "./components/RegisterLoginForm";
+import axios from "axios";
+import { SnackbarProvider } from "./context/SnackbarContext";
 
-function App() {
+const App = () => {
+  const [token, setToken] = useState("");
+
+  const setAuthToken = (token) => {
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
+  };
+
+  const handleTokenChange = (newToken) => {
+    setToken(newToken);
+    setAuthToken(newToken);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <SnackbarProvider>
+      <div className="App">
+        <Box display="flex" alignItems="center" justifyContent={"center"} sx={{ height: "100vh" }}>
+          <Card sx={{ maxWidth: 545 }}>
+            <CardContent>{token ? <ProductForm /> : <RegisterLoginForm setToken={handleTokenChange} />}</CardContent>
+          </Card>
+        </Box>
+      </div>
+    </SnackbarProvider>
   );
-}
+};
 
 export default App;
