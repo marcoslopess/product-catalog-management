@@ -10,6 +10,7 @@ import { Navigate } from "react-router-dom";
 
 import RegisterLoginForm from "./components/RegisterLoginForm";
 
+import ProductList from "./components/ProductList";
 import ProductForm from "./components/ProductForm";
 import CategoryForm from "./components/CategoryForm";
 
@@ -19,7 +20,7 @@ const App = () => {
       <SnackbarProvider>
         <div className="App">
           <Box display="flex" alignItems="center" justifyContent={"center"} sx={{ height: "100vh" }}>
-            <Card sx={{ maxWidth: 545 }}>
+            <Card>
               <CardContent>
                 <Routes>
                   <Route
@@ -34,6 +35,23 @@ const App = () => {
                     path="/products"
                     element={
                       <PrivateRoute>
+                        <ProductList />
+                      </PrivateRoute>
+                    }
+                  />
+
+                  <Route
+                    path="/products/new"
+                    element={
+                      <PrivateRoute>
+                        <ProductForm />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/edit-product/:id"
+                    element={
+                      <PrivateRoute>
                         <ProductForm />
                       </PrivateRoute>
                     }
@@ -46,7 +64,6 @@ const App = () => {
                       </PrivateRoute>
                     }
                   />
-
                   <Route path="/" element={<Navigate to="/registerLogin" />} />
                 </Routes>
                 {/* {token ? <ProductForm /> : <RegisterLoginForm setToken={handleTokenChange} />} */}
