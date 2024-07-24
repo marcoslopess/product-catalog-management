@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SaveIcon from "@mui/icons-material/Save";
 import { TextField, Button, Typography, MenuItem } from "@mui/material";
-
 import axios from "axios";
 import { useSnackbar } from "../context/SnackbarContext";
 import { useNavigate, useParams } from "react-router-dom";
@@ -40,7 +39,7 @@ const ProductForm = () => {
           setPrice(product.price);
           setSelectedCategory(product.categoryId);
         } catch (error) {
-          openSnackbar("Failed to fetch product.", "error");
+          openSnackbar("Falha ao buscar produtos.", "error");
         }
       };
 
@@ -58,7 +57,7 @@ const ProductForm = () => {
         });
         setCategories(categoriesResponse.data);
       } catch (error) {
-        openSnackbar("Failed to fetch products or categories.", "error");
+        openSnackbar("Falha ao buscar categorias.", "error");
       }
     };
 
@@ -74,10 +73,10 @@ const ProductForm = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      openSnackbar("Product created successfully!", "success");
+      openSnackbar("Produto criado com sucesso!", "success");
       navigate("/products");
     } catch (error) {
-      openSnackbar("Failed to create product.", "error");
+      openSnackbar("Falha ao criar produto.", "error");
     }
   };
 
@@ -90,10 +89,10 @@ const ProductForm = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      openSnackbar("Product updated successfully!", "success");
+      openSnackbar("Produto atualizado com sucesso!", "success");
       navigate("/products");
     } catch (error) {
-      openSnackbar("Failed to update product.", "error");
+      openSnackbar("Falha ao atualizar produto.", "error");
     }
   };
 

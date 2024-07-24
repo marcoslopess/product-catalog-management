@@ -13,6 +13,7 @@ import RegisterLoginForm from "./components/RegisterLoginForm";
 import ProductList from "./components/ProductList";
 import ProductForm from "./components/ProductForm";
 import CategoryForm from "./components/CategoryForm";
+import CategoryList from "./components/CategoryList";
 
 const App = () => {
   return (
@@ -39,7 +40,6 @@ const App = () => {
                       </PrivateRoute>
                     }
                   />
-
                   <Route
                     path="/products/new"
                     element={
@@ -58,6 +58,23 @@ const App = () => {
                   />
                   <Route
                     path="/categories"
+                    element={
+                      <PrivateRoute>
+                        <CategoryList />
+                      </PrivateRoute>
+                    }
+                  />
+
+                  <Route
+                    path="/categories/new"
+                    element={
+                      <PrivateRoute>
+                        <CategoryForm />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/edit-category/:id"
                     element={
                       <PrivateRoute>
                         <CategoryForm />

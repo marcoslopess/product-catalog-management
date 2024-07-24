@@ -9,6 +9,10 @@ const Category = {
       ownerId,
     ]);
   },
+  update: (id, data) => {
+    const { title, description } = data;
+    return db.execute("UPDATE categories SET title = ?, description = ? WHERE id = ?", [title, description, id]);
+  },
   findAll: () => {
     return db.execute("SELECT * FROM categories");
   },
