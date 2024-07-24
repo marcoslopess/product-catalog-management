@@ -39,3 +39,13 @@ exports.getCategoryById = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.deleteCategory = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await Category.delete(id);
+    res.status(200).json({ message: "Category deleted", affectedRows: result[0].affectedRows });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
