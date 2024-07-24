@@ -15,7 +15,4 @@ app.use("/owners", authenticateToken, ownerRoutes);
 app.use("/products", authenticateToken, productRoutes);
 app.use("/categories", authenticateToken, categoryRoutes);
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+module.exports = app;

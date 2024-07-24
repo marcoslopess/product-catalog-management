@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import SaveIcon from "@mui/icons-material/Save";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
 import { useSnackbar } from "../context/SnackbarContext";
 import { TextField, Button, Typography } from "@mui/material";
@@ -10,6 +12,7 @@ const CategoryForm = () => {
   const { openSnackbar } = useSnackbar();
   const [edit, setEdit] = useState(false);
   const [ownerId, setOwnerId] = useState(false);
+  const [version, setVersion] = useState("");
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -33,6 +36,7 @@ const CategoryForm = () => {
           setTitle(category.title);
           setDescription(category.description);
           setOwnerId(category.ownerId);
+          setVersion(category.version);
         } catch (error) {
           openSnackbar("Falha ao buscar categorias.", "error");
         }
@@ -62,7 +66,7 @@ const CategoryForm = () => {
 
   const handleSubmitUpdate = async (e) => {
     e.preventDefault();
-    const updateCategory = { title, description };
+    const updateCategory = { title, description, version };
     try {
       await axios.put(`http://localhost:3001/categories/${id}`, updateCategory, {
         headers: {
@@ -77,7 +81,7 @@ const CategoryForm = () => {
   };
 
   return (
-    <div>
+    <div style={{ paddingLeft: "25vw", paddingRight: "25vw", height: "80vh" }}>
       <Typography gutterBottom variant="h5" component="div">
         {edit ? "Editar" : "Criar"} Categoria
       </Typography>
@@ -108,12 +112,23 @@ const CategoryForm = () => {
           sx={{ marginTop: "10px", marginBottom: "10px" }}
           value={ownerId}
         />
-        <Button variant="outlined" type="submit" sx={{ marginBottom: "15px" }}>
-          {edit ? "Salvar" : "Criar"} Categoria
-        </Button>
-        <Button variant="contained" onClick={() => navigate(`/categories`)}>
-          Voltar
-        </Button>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            paddingLeft: "25%",
+            paddingRight: "25%",
+            marginTop: "15px",
+          }}
+        >
+          <Button variant="outlined" type="submit" sx={{ marginBottom: "15px" }}>
+            <SaveIcon sx={{ marginRight: "5px" }} /> {edit ? "Salvar" : "Criar"}
+          </Button>
+          <Button variant="contained" onClick={() => navigate(`/categories`)}>
+            <ArrowBackIcon sx={{ marginRight: "5px" }} /> Voltar
+          </Button>
+        </div>
       </form>
     </div>
   );

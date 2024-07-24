@@ -1,37 +1,66 @@
 const db = require("../config/database");
 
 const Product = {
-  create: (data) => {
+  create: async (data) => {
     const { title, description, price, categoryId, ownerId } = data;
-    return db.execute("INSERT INTO products (title, description, price, categoryId, ownerId) VALUES (?, ?, ?, ?, ?)", [
-      title,
-      description,
-      price,
-      categoryId,
-      ownerId,
-    ]);
+    const connection = await db.getConnection();
+    await connection.beginTransaction();
+    try {
+      const [result] = await connection.execute(
+        "INSERT INTO products (title, description, price, categoryId, ownerId) VALUES (?, ?, ?, ?, ?)",
+        [title, description, price, categoryId, ownerId]
+      );
+      await connection.commit();
+      return result;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   },
-  update: (id, data) => {
-    const { title, description, price, categoryId } = data;
-    return db.execute("UPDATE products SET title = ?, description = ?, price = ?, categoryId = ? WHERE id = ?", [
-      title,
-      description,
-      price,
-      categoryId,
-      id,
-    ]);
+  update: async (id, data) => {
+    const { title, description, price, categoryId, version } = data;
+    const connection = await db.getConnection();
+    await connection.beginTransaction();
+    try {
+      const [result] = await connection.execute(
+        "UPDATE products SET title = ?, description = ?, price = ?, categoryId = ?, version = version + 1 WHERE id = ? AND version = ?",
+        [title, description, price, categoryId, id, version]
+      );
+      if (result.affectedRows === 0) {
+        throw new Error("Conflict: Version mismatch");
+      }
+      await connection.commit();
+      return result;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   },
-  updateCategory: (productId, categoryId) => {
-    return db.execute("UPDATE products SET categoryId = ? WHERE id = ?", [categoryId, productId]);
+  findAll: async () => {
+    const [rows] = await db.execute("SELECT * FROM products");
+    return rows;
   },
-  findAll: () => {
-    return db.execute("SELECT * FROM products");
+  findById: async (id) => {
+    const [rows] = await db.execute("SELECT * FROM products WHERE id = ?", [id]);
+    return rows[0];
   },
-  findById: (id) => {
-    return db.execute("SELECT * FROM products WHERE id = ?", [id]);
-  },
-  delete: (id) => {
-    return db.execute("DELETE FROM products WHERE id = ?", [id]);
+  delete: async (id) => {
+    const connection = await db.getConnection();
+    await connection.beginTransaction();
+    try {
+      const [result] = await connection.execute("DELETE FROM products WHERE id = ?", [id]);
+      await connection.commit();
+      return result;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   },
 };
 

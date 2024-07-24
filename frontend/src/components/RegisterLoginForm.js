@@ -24,6 +24,7 @@ const RegisterForm = () => {
       localStorage.setItem("token", token);
       var decoded = jwtDecode(token);
       localStorage.setItem("ownerId", decoded.id);
+      localStorage.setItem("name", decoded.name);
       openSnackbar("Owner registered successfully!", "success");
       navigate("/products");
     } catch (error) {
@@ -85,6 +86,7 @@ const LoginForm = () => {
       var decoded = jwtDecode(token);
       localStorage.setItem("token", token);
       localStorage.setItem("ownerId", decoded.id);
+      localStorage.setItem("name", decoded.name);
       openSnackbar("Login successful!", "success");
       navigate("/products");
     } catch (error) {
