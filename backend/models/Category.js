@@ -1,20 +1,47 @@
 const db = require("../config/database");
 
 const Category = {
-  create: (data) => {
+  create: async (data) => {
     const { title, description, ownerId } = data;
-    return db.execute("INSERT INTO categories (title, description, ownerId) VALUES (?, ?, ?)", [
-      title,
-      description,
-      ownerId,
-    ]);
+    const connection = await db.getConnection();
+    await connection.beginTransaction();
+    try {
+      const [result] = await connection.execute(
+        "INSERT INTO categories (title, description, ownerId) VALUES (?, ?, ?)",
+        [title, description, ownerId]
+      );
+      await connection.commit();
+      return result;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   },
-  update: (id, data) => {
-    const { title, description } = data;
-    return db.execute("UPDATE categories SET title = ?, description = ? WHERE id = ?", [title, description, id]);
+  update: async (id, data) => {
+    const { title, description, version } = data;
+    const connection = await db.getConnection();
+    await connection.beginTransaction();
+    try {
+      const [result] = await connection.execute(
+        "UPDATE categories SET title = ?, description = ?, version = version + 1 WHERE id = ? AND version = ?",
+        [title, description, id, version]
+      );
+      if (result.affectedRows === 0) {
+        throw new Error("Conflict: Version mismatch");
+      }
+      await connection.commit();
+      return result;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   },
-  findAll: () => {
-    return db.execute(`
+  findAll: async () => {
+    const [rows] = await db.execute(`
       SELECT c.*, 
              CASE 
                WHEN EXISTS (SELECT 1 FROM products p WHERE p.categoryId = c.id) 
@@ -23,12 +50,25 @@ const Category = {
              END AS canBeDeleted
       FROM categories c
     `);
+    return rows;
   },
-  findById: (id) => {
-    return db.execute("SELECT * FROM categories WHERE id = ?", [id]);
+  findById: async (id) => {
+    const [rows] = await db.execute("SELECT * FROM categories WHERE id = ?", [id]);
+    return rows[0];
   },
-  delete: (id) => {
-    return db.execute("DELETE FROM categories WHERE id = ?", [id]);
+  delete: async (id) => {
+    const connection = await db.getConnection();
+    await connection.beginTransaction();
+    try {
+      const [result] = await connection.execute("DELETE FROM categories WHERE id = ?", [id]);
+      await connection.commit();
+      return result;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   },
 };
 

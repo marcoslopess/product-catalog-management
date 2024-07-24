@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SaveIcon from "@mui/icons-material/Save";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { TextField, Button, Typography, MenuItem } from "@mui/material";
 import axios from "axios";
 import { useSnackbar } from "../context/SnackbarContext";
@@ -10,7 +11,8 @@ const ProductForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [version, setVersion] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [edit, setEdit] = useState(false);
   const [categories, setCategories] = useState([]);
   const ownerId = localStorage.getItem("ownerId");
@@ -38,6 +40,7 @@ const ProductForm = () => {
           setDescription(product.description);
           setPrice(product.price);
           setSelectedCategory(product.categoryId);
+          setVersion(product.version);
         } catch (error) {
           openSnackbar("Falha ao buscar produtos.", "error");
         }
@@ -66,7 +69,7 @@ const ProductForm = () => {
 
   const handleSubmitCreate = async (e) => {
     e.preventDefault();
-    const product = { title, description, price, categoryId: selectedCategory, ownerId };
+    const product = { title, description, price, categoryId: selectedCategory, ownerId, version };
     try {
       await axios.post("http://localhost:3001/products", product, {
         headers: {
@@ -97,7 +100,7 @@ const ProductForm = () => {
   };
 
   return (
-    <>
+    <div style={{ paddingLeft: "25vw", paddingRight: "25vw", height: "80vh" }}>
       <Typography gutterBottom variant="h5" component="div">
         {edit ? "Editar" : "Criar"} Produto
       </Typography>
@@ -156,14 +159,24 @@ const ProductForm = () => {
           sx={{ marginTop: "10px", marginBottom: "10px" }}
           value={ownerId}
         />
-        <Button variant="outlined" type="submit" sx={{ marginBottom: "15px" }}>
-          <SaveIcon /> {edit ? "Salvar" : "Criar"} Produto
-        </Button>
-        <Button variant="contained" onClick={() => navigate(`/products`)}>
-          Voltar
-        </Button>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            paddingLeft: "25%",
+            paddingRight: "25%",
+            marginTop: "15px",
+          }}
+        >
+          <Button variant="outlined" type="submit" sx={{ marginBottom: "15px" }}>
+            <SaveIcon sx={{ marginRight: "5px" }} /> {edit ? "Salvar" : "Criar"}
+          </Button>
+          <Button variant="contained" onClick={() => navigate(`/products`)}>
+            <ArrowBackIcon sx={{ marginRight: "5px" }} /> Voltar
+          </Button>
+        </div>
       </form>
-    </>
+    </div>
   );
 };
 

@@ -1,12 +1,11 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import { SnackbarProvider } from "./context/SnackbarContext";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import { Navigate } from "react-router-dom";
+import MenuDrawer from "./components/MenuDrawer";
 
 import RegisterLoginForm from "./components/RegisterLoginForm";
 
@@ -20,73 +19,78 @@ const App = () => {
     <Router>
       <SnackbarProvider>
         <div className="App">
-          <Box display="flex" alignItems="center" justifyContent={"center"} sx={{ height: "100vh" }}>
-            <Card>
-              <CardContent>
-                <Routes>
-                  <Route
-                    path="/registerLogin"
-                    element={
-                      <PublicRoute>
-                        <RegisterLoginForm />
-                      </PublicRoute>
-                    }
-                  />
-                  <Route
-                    path="/products"
-                    element={
-                      <PrivateRoute>
-                        <ProductList />
-                      </PrivateRoute>
-                    }
-                  />
-                  <Route
-                    path="/products/new"
-                    element={
-                      <PrivateRoute>
-                        <ProductForm />
-                      </PrivateRoute>
-                    }
-                  />
-                  <Route
-                    path="/edit-product/:id"
-                    element={
-                      <PrivateRoute>
-                        <ProductForm />
-                      </PrivateRoute>
-                    }
-                  />
-                  <Route
-                    path="/categories"
-                    element={
-                      <PrivateRoute>
-                        <CategoryList />
-                      </PrivateRoute>
-                    }
-                  />
-
-                  <Route
-                    path="/categories/new"
-                    element={
-                      <PrivateRoute>
-                        <CategoryForm />
-                      </PrivateRoute>
-                    }
-                  />
-                  <Route
-                    path="/edit-category/:id"
-                    element={
-                      <PrivateRoute>
-                        <CategoryForm />
-                      </PrivateRoute>
-                    }
-                  />
-                  <Route path="/" element={<Navigate to="/registerLogin" />} />
-                </Routes>
-                {/* {token ? <ProductForm /> : <RegisterLoginForm setToken={handleTokenChange} />} */}
-              </CardContent>
-            </Card>
-          </Box>
+          <Routes>
+            <Route
+              path="/registerLogin"
+              element={
+                <Box display="flex" alignItems="center" justifyContent={"center"} sx={{ height: "100vh" }}>
+                  <PublicRoute>
+                    <RegisterLoginForm />
+                  </PublicRoute>
+                </Box>
+              }
+            />
+            <Route
+              path="/*"
+              element={
+                <PrivateRoute>
+                  <MenuDrawer>
+                    <Routes>
+                      <Route
+                        path="/products"
+                        element={
+                          <PrivateRoute>
+                            <ProductList />
+                          </PrivateRoute>
+                        }
+                      />
+                      <Route
+                        path="/products/new"
+                        element={
+                          <PrivateRoute>
+                            <ProductForm />
+                          </PrivateRoute>
+                        }
+                      />
+                      <Route
+                        path="/edit-product/:id"
+                        element={
+                          <PrivateRoute>
+                            <ProductForm />
+                          </PrivateRoute>
+                        }
+                      />
+                      <Route
+                        path="/categories"
+                        element={
+                          <PrivateRoute>
+                            <CategoryList />
+                          </PrivateRoute>
+                        }
+                      />
+                      <Route
+                        path="/categories/new"
+                        element={
+                          <PrivateRoute>
+                            <CategoryForm />
+                          </PrivateRoute>
+                        }
+                      />
+                      <Route
+                        path="/edit-category/:id"
+                        element={
+                          <PrivateRoute>
+                            <CategoryForm />
+                          </PrivateRoute>
+                        }
+                      />{" "}
+                    </Routes>
+                  </MenuDrawer>
+                </PrivateRoute>
+              }
+            />
+            <Route path="/" element={<Navigate to="/registerLogin" />} />
+          </Routes>
         </div>
       </SnackbarProvider>
     </Router>
