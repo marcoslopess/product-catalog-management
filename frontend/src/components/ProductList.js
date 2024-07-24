@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../context/SnackbarContext";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { red } from "@mui/material/colors";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 
 const ProductList = () => {
+  const [open, setOpen] = useState(false);
+  const [idDelete, setIdDelete] = useState(null);
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
@@ -28,6 +36,22 @@ const ProductList = () => {
     fetchProducts();
   }, [openSnackbar]);
 
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:3001/products/${idDelete}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setProducts(products.filter((product) => product.id !== idDelete));
+      openSnackbar("Produto excluido com sucesso!", "success");
+      setIdDelete(null);
+      setOpen(false);
+    } catch (error) {
+      openSnackbar("Falha ao excluir produto.", "error");
+    }
+  };
+
   const columns = [
     { field: "id", headerName: "ID" },
     { field: "title", headerName: "Titulo", width: 150 },
@@ -37,15 +61,38 @@ const ProductList = () => {
     { field: "ownerId", headerName: "Propietario" },
     {
       field: "actions",
+      type: "actions",
       headerName: "Ações",
-      renderCell: (params) => (
-        <Button variant="contained" color="primary" onClick={() => navigate(`/edit-product/${params.row.id}`)}>
-          <EditIcon />
-        </Button>
-      ),
+      width: 100,
+      cellClassName: "actions",
+      getActions: ({ id, row }) => {
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Editar"
+            sx={{
+              color: "primary.main",
+            }}
+            onClick={() => navigate(`/edit-product/${id}`)}
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Excluir"
+            className="textPrimary"
+            sx={{ color: red[500] }}
+            onClick={() => {
+              setOpen(true);
+              setIdDelete(id);
+            }}
+          />,
+        ];
+      },
     },
   ];
 
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <div style={{ height: 400, width: "100%" }}>
       <Button variant="contained" color="primary" onClick={() => navigate(`/products/new`)}>
@@ -59,6 +106,22 @@ const ProductList = () => {
         checkboxSelection
         disableSelectionOnClick
       />
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">Deseja excluir o produto?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={handleDelete} autoFocus>
+            Excluir
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

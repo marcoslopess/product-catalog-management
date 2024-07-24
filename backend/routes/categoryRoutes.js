@@ -7,5 +7,6 @@ router.post("/", authenticateToken, CategoryController.createCategory);
 router.put("/:id", authenticateToken, CategoryController.updateCategory);
 router.get("/", authenticateToken, CategoryController.getAllCategories);
 router.get("/:id", authenticateToken, CategoryController.getCategoryById);
+router.delete("/:id", authenticateToken, CategoryController.deleteCategory);
 
 module.exports = router;

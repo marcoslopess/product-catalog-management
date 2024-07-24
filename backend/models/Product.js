@@ -30,6 +30,9 @@ const Product = {
   findById: (id) => {
     return db.execute("SELECT * FROM products WHERE id = ?", [id]);
   },
+  delete: (id) => {
+    return db.execute("DELETE FROM products WHERE id = ?", [id]);
+  },
 };
 
 module.exports = Product;
