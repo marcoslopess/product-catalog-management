@@ -6,40 +6,39 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../context/SnackbarContext";
 import EditIcon from "@mui/icons-material/Edit";
 
-const ProductList = () => {
-  const [products, setProducts] = useState([]);
+const CategoryList = () => {
+  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/products", {
+        const response = await axios.get("http://localhost:3001/categories", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        setProducts(response.data);
+        setCategories(response.data);
       } catch (error) {
-        openSnackbar("Falha ao buscar produtos.", "error");
+        openSnackbar("Falha ao buscar categorias.", "error");
       }
     };
 
-    fetchProducts();
+    fetchCategories();
   }, [openSnackbar]);
 
   const columns = [
     { field: "id", headerName: "ID" },
-    { field: "title", headerName: "Titulo", width: 150 },
+    { field: "title", headerName: "Titulo" },
     { field: "description", headerName: "Descrição", width: 200 },
-    { field: "price", headerName: "Preço" },
-    { field: "categoryId", headerName: "Categoria" },
     { field: "ownerId", headerName: "Propietario" },
     {
       field: "actions",
       headerName: "Ações",
+      width: 90,
       renderCell: (params) => (
-        <Button variant="contained" color="primary" onClick={() => navigate(`/edit-product/${params.row.id}`)}>
+        <Button variant="contained" color="primary" onClick={() => navigate(`/edit-category/${params.row.id}`)}>
           <EditIcon />
         </Button>
       ),
@@ -48,11 +47,11 @@ const ProductList = () => {
 
   return (
     <div style={{ height: 400, width: "100%" }}>
-      <Button variant="contained" color="primary" onClick={() => navigate(`/products/new`)}>
-        Criar Produto
+      <Button variant="contained" color="primary" onClick={() => navigate(`/categories/new`)}>
+        Criar Categoria
       </Button>
       <DataGrid
-        rows={products}
+        rows={categories}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
@@ -63,4 +62,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default CategoryList;

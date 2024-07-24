@@ -9,6 +9,16 @@ exports.createCategory = async (req, res) => {
   }
 };
 
+exports.updateCategory = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await Category.update(id, req.body);
+    res.status(200).json({ message: "Category updated", affectedRows: result[0].affectedRows });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.getAllCategories = async (req, res) => {
   try {
     const [rows] = await Category.findAll();
