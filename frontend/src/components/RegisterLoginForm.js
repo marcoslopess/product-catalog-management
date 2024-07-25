@@ -19,12 +19,13 @@ const RegisterForm = () => {
     e.preventDefault();
     const owner = { name, email, password };
     try {
-      const response = await axios.post("http://localhost:3001/auth/register", owner);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/register`, owner);
       const { token } = response.data;
       localStorage.setItem("token", token);
       var decoded = jwtDecode(token);
       localStorage.setItem("ownerId", decoded.id);
       localStorage.setItem("name", decoded.name);
+      localStorage.setItem("role", decoded.role);
       openSnackbar("Owner registered successfully!", "success");
       navigate("/products");
     } catch (error) {
@@ -81,12 +82,13 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/auth/login", { email, password });
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, { email, password });
       const { token } = response.data;
       var decoded = jwtDecode(token);
       localStorage.setItem("token", token);
       localStorage.setItem("ownerId", decoded.id);
       localStorage.setItem("name", decoded.name);
+      localStorage.setItem("role", decoded.role);
       openSnackbar("Login successful!", "success");
       navigate("/products");
     } catch (error) {

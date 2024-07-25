@@ -29,7 +29,7 @@ const ProductForm = () => {
     if (id) {
       const fetchProduct = async () => {
         try {
-          const response = await axios.get(`http://localhost:3001/products/${id}`, {
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/products/${id}`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
@@ -53,7 +53,7 @@ const ProductForm = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const categoriesResponse = await axios.get("http://localhost:3001/categories", {
+        const categoriesResponse = await axios.get(`${process.env.REACT_APP_API_URL}/categories`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -71,7 +71,7 @@ const ProductForm = () => {
     e.preventDefault();
     const product = { title, description, price, categoryId: selectedCategory, ownerId, version };
     try {
-      await axios.post("http://localhost:3001/products", product, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/products`, product, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -85,9 +85,9 @@ const ProductForm = () => {
 
   const handleSubmitUpdate = async (e) => {
     e.preventDefault();
-    const updatedProduct = { title, description, price, categoryId: selectedCategory };
+    const updatedProduct = { title, description, price, categoryId: selectedCategory, version };
     try {
-      await axios.put(`http://localhost:3001/products/${id}`, updatedProduct, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/products/${id}`, updatedProduct, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -143,7 +143,7 @@ const ProductForm = () => {
           }}
           sx={{ marginTop: "10px", marginBottom: "10px" }}
         >
-          <MenuItem value="" sx={{ color: "transparent" }}>
+          <MenuItem value={null} sx={{ color: "transparent" }}>
             <em>Selecione uma categoria</em>
           </MenuItem>
           {categories.map((category) => (

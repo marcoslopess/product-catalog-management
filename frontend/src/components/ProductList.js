@@ -23,7 +23,7 @@ const ProductList = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/products", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/products`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -39,7 +39,7 @@ const ProductList = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3001/products/${idDelete}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/products/${idDelete}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -94,19 +94,20 @@ const ProductList = () => {
     setOpen(false);
   };
   return (
-    <div style={{ height: 400, width: "100%" }}>
+    <div style={{ height: 400 }}>
       <div
         style={{
           display: "flex",
-          justifyContent: "end",
+          justifyContent: "space-between",
           marginBottom: "25px",
         }}
       >
+        <h1 style={{ margin: 0 }}>Listagem de Produtos</h1>
         <Button variant="contained" color="primary" onClick={() => navigate(`/products/new`)}>
           <CreateIcon sx={{ marginRight: "5px" }} /> Criar Produto
         </Button>
       </div>
-      <DataGrid rows={products} columns={columns} pageSize={5} rowsPerPageOptions={[5]} />
+      <DataGrid rows={products} columns={columns} pageSize={5} rowsPerPageOptions={[1]} />
       <Dialog
         open={open}
         onClose={handleClose}

@@ -13,8 +13,12 @@ import ProductList from "./components/ProductList";
 import ProductForm from "./components/ProductForm";
 import CategoryForm from "./components/CategoryForm";
 import CategoryList from "./components/CategoryList";
+import CatalogList from "./components/CatalogList";
+import UserList from "./components/UserList";
+import UserForm from "./components/UserForm";
 
 const App = () => {
+  const isAdmin = localStorage.getItem("role") === "admin";
   return (
     <Router>
       <SnackbarProvider>
@@ -83,7 +87,35 @@ const App = () => {
                             <CategoryForm />
                           </PrivateRoute>
                         }
-                      />{" "}
+                      />
+                      <Route
+                        path="/search"
+                        element={
+                          <PrivateRoute>
+                            <CatalogList />
+                          </PrivateRoute>
+                        }
+                      />
+                      {isAdmin && (
+                        <>
+                          <Route
+                            path="/users"
+                            element={
+                              <PrivateRoute>
+                                <UserList />
+                              </PrivateRoute>
+                            }
+                          />
+                          <Route
+                            path="/edit-user/:id"
+                            element={
+                              <PrivateRoute>
+                                <UserForm />
+                              </PrivateRoute>
+                            }
+                          />
+                        </>
+                      )}
                     </Routes>
                   </MenuDrawer>
                 </PrivateRoute>

@@ -26,7 +26,7 @@ const CategoryForm = () => {
     if (id) {
       const fetchCategory = async () => {
         try {
-          const response = await axios.get(`http://localhost:3001/categories/${id}`, {
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/categories/${id}`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
@@ -52,7 +52,7 @@ const CategoryForm = () => {
     e.preventDefault();
     const category = { title, description, ownerId };
     try {
-      await axios.post("http://localhost:3001/categories", category, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/categories`, category, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -68,7 +68,7 @@ const CategoryForm = () => {
     e.preventDefault();
     const updateCategory = { title, description, version };
     try {
-      await axios.put(`http://localhost:3001/categories/${id}`, updateCategory, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/categories/${id}`, updateCategory, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

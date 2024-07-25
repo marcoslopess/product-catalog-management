@@ -25,6 +25,7 @@ const MenuDrawer = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [name, setName] = useState("");
   const navigate = useNavigate();
+  const isAdmin = localStorage.getItem("role") === "admin";
 
   useEffect(() => {
     const name = localStorage.getItem("name");
@@ -58,6 +59,14 @@ const MenuDrawer = ({ children }) => {
           </ListItemIcon>
           <ListItemText primary="Categorias" />
         </ListItem>
+        {isAdmin && (
+          <ListItem button onClick={() => navigate("/users")}>
+            <ListItemIcon>
+              <CategoryIcon />
+            </ListItemIcon>
+            <ListItemText primary="Usuarios" />
+          </ListItem>
+        )}
       </List>
     </div>
   );
