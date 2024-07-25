@@ -23,7 +23,7 @@ const CategoryList = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/categories", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/categories`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -39,7 +39,7 @@ const CategoryList = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3001/categories/${idDelete}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/categories/${idDelete}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -98,10 +98,11 @@ const CategoryList = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "end",
+          justifyContent: "space-between",
           marginBottom: "25px",
         }}
       >
+        <h1 style={{ margin: 0 }}>Listagem de Categorias</h1>
         <Button variant="contained" color="primary" onClick={() => navigate(`/categories/new`)} sx={{}}>
           <CreateIcon sx={{ marginRight: "5px" }} /> Criar Categoria
         </Button>

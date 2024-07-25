@@ -1,9 +1,10 @@
-const db = require("../config/database");
+const { pool } = require("../config/database");
+const publishMessage = require("../utils/publisher");
 
 const Category = {
   create: async (data) => {
     const { title, description, ownerId } = data;
-    const connection = await db.getConnection();
+    const connection = await pool.getConnection();
     await connection.beginTransaction();
     try {
       const [result] = await connection.execute(
@@ -19,9 +20,9 @@ const Category = {
       connection.release();
     }
   },
-  update: async (id, data) => {
+  update: async (role, id, data) => {
     const { title, description, version } = data;
-    const connection = await db.getConnection();
+    const connection = await pool.getConnection();
     await connection.beginTransaction();
     try {
       const [result] = await connection.execute(
@@ -31,6 +32,12 @@ const Category = {
       if (result.affectedRows === 0) {
         throw new Error("Conflict: Version mismatch");
       }
+
+      if (role === "admin") {
+        data.categoryId = id;
+        await publishMessage({ type: "UPDATE_CATEGORY", payload: data });
+      }
+
       await connection.commit();
       return result;
     } catch (error) {
@@ -41,7 +48,7 @@ const Category = {
     }
   },
   findAll: async () => {
-    const [rows] = await db.execute(`
+    const [rows] = await pool.execute(`
       SELECT c.*, 
              CASE 
                WHEN EXISTS (SELECT 1 FROM products p WHERE p.categoryId = c.id) 
@@ -53,11 +60,11 @@ const Category = {
     return rows;
   },
   findById: async (id) => {
-    const [rows] = await db.execute("SELECT * FROM categories WHERE id = ?", [id]);
+    const [rows] = await pool.execute("SELECT * FROM categories WHERE id = ?", [id]);
     return rows[0];
   },
   delete: async (id) => {
-    const connection = await db.getConnection();
+    const connection = await pool.getConnection();
     await connection.beginTransaction();
     try {
       const [result] = await connection.execute("DELETE FROM categories WHERE id = ?", [id]);

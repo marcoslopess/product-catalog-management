@@ -29,6 +29,13 @@ services:
     volumes:
       - mysql-test-data:/var/lib/mysql
 
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq-container
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Porta de gerenciamento
+
 volumes:
   mysql-data:
     driver: local
