@@ -18,6 +18,8 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import CategoryIcon from "@mui/icons-material/Category";
 import ProductIcon from "@mui/icons-material/Store";
+import PersonIcon from "@mui/icons-material/Person";
+import ViewListIcon from "@mui/icons-material/ViewList";
 
 const drawerWidth = 240;
 
@@ -59,10 +61,16 @@ const MenuDrawer = ({ children }) => {
           </ListItemIcon>
           <ListItemText primary="Categorias" />
         </ListItem>
+        <ListItem button onClick={() => navigate("/search")}>
+          <ListItemIcon>
+            <ViewListIcon />
+          </ListItemIcon>
+          <ListItemText primary="Flat Table" />
+        </ListItem>
         {isAdmin && (
           <ListItem button onClick={() => navigate("/users")}>
             <ListItemIcon>
-              <CategoryIcon />
+              <PersonIcon />
             </ListItemIcon>
             <ListItemText primary="Usuarios" />
           </ListItem>

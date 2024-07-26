@@ -17,7 +17,6 @@ const CatalogList = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        console.log(response);
         setCatalog(response.data);
       } catch (error) {
         openSnackbar("Falha ao buscar categorias.", "error");
